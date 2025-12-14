@@ -36,7 +36,7 @@ public class verify extends HttpServlet {
 
             register reg = new register();
             try {
-                boolean success = reg.set(fullname, username, password, gender, role);
+                boolean success = reg.set(fullname, username, password, gender, role, email);
                 if (success) {
                     // Invalidate session (remove all attributes)
                     session.invalidate();
