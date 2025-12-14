@@ -22,7 +22,6 @@ A comprehensive web-based Course Management System built using **Java Servlets**
 - [Installation & Setup](#installation--setup)
 - [Usage](#usage)
 - [User Roles](#user-roles)
-- [Screenshots](#screenshots)
 - [Contributors](#contributors)
 - [License](#license)
 
@@ -351,35 +350,6 @@ Role: Admin
 
 ---
 
-## 📸 Screenshots
-
-### Landing Page
-- Modern glassmorphism design
-- Animated gradient background
-- Clean navigation buttons
-
-### Login Page
-- Secure authentication
-- Role selection (Student/Teacher/Admin)
-- Responsive form design
-
-### Admin Dashboard
-- Course management interface
-- Teacher assignment functionality
-- Glass-effect cards with hover animations
-
-### Teacher Dashboard
-- Assigned courses display
-- Student list per course
-- Professional layout
-
-### Student Dashboard
-- Course enrollment system
-- Enrolled courses overview
-- User-friendly interface
-
----
-
 ## 🎓 Project Compliance
 
 This project fully satisfies all requirements specified in the Web Technology lab project:
@@ -421,30 +391,6 @@ This project is developed for educational purposes as part of the Web Technology
 - Bootstrap team for the excellent UI framework
 - Apache Tomcat community for the servlet container
 - MySQL for the robust database system
-
----
-
-## 📞 Contact
-
-For any queries or feedback regarding this project:
-
-- **Email**: [your-email@example.com]
-- **GitHub**: [your-github-username]
-
----
-
-## 🔮 Future Enhancements
-
-Potential improvements for future versions:
-- Password encryption (BCrypt/Argon2)
-- Course ratings and reviews
-- Assignment submission system
-- Grade management
-- File upload for course materials
-- Real-time notifications
-- Advanced search and filtering
-- REST API integration
-- Mobile application
 
 ---
 
