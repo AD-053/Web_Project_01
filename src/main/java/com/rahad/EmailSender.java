@@ -12,6 +12,8 @@ public class EmailSender {
         
         String fromEmail = "vairahad99@gmail.com";   // your Gmail
         String password = "tlpejfijpbskfyow";        // Gmail App Password
+        
+        System.out.println("Hello");
 
         // SMTP Configuration
         Properties props = new Properties();
@@ -29,7 +31,7 @@ public class EmailSender {
 
         // Create Email
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(fromEmail, "Rahad Course Management"));
+        message.setFrom(new InternetAddress(fromEmail, "Course Management System"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
         message.setSubject("📧 Email Verification – Course Management System");
 
@@ -37,7 +39,7 @@ public class EmailSender {
         String htmlContent = "<div style='font-family:Arial, sans-serif; background:#f4f6f9; padding:30px;'>"
                 + "<div style='max-width:600px; margin:0 auto; background:#ffffff; border-radius:10px; "
                 + "box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:30px;'>"
-                + "<h2 style='color:#2563eb; text-align:center;'>Rahad Course Management</h2>"
+                + "<h2 style='color:#2563eb; text-align:center;'>Course Management System</h2>"
                 + "<p style='font-size:16px; color:#333;'>Hello,</p>"
                 + "<p style='font-size:15px; color:#555;'>Thank you for registering at our <strong>Course Management System</strong>. "
                 + "To complete your sign-up, please verify your email address using the code below:</p>"
@@ -50,7 +52,7 @@ public class EmailSender {
                 + "If you did not sign up, please ignore this email.</p>"
                 + "<hr style='margin:30px 0; border:none; border-top:1px solid #eee;'>"
                 + "<p style='font-size:12px; color:#999; text-align:center;'>"
-                + "© " + java.time.Year.now() + " Rahad Course Management. All rights reserved."
+                + "© " + java.time.Year.now() + " Course Management System. All rights reserved."
                 + "</p>"
                 + "</div></div>";
 
