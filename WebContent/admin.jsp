@@ -65,19 +65,34 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        .form-control {
+        /* Input Fields, including select */
+        .form-control, .form-select {
             background: rgba(255, 255, 255, 0.2);
             border: none;
             border-radius: 8px;
             padding: 10px 15px;
             color: #fff;
             transition: background 0.3s;
+            /* Ensure text is white and dropdown arrow is visible */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
         }
 
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             background: rgba(255, 255, 255, 0.3);
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
             color: #fff;
+        }
+        
+        /* Options in dropdowns need a visible background */
+        .form-select option {
+            background-color: #0A3D62; /* Dark background for options */
+            color: white;
         }
 
         /* Submit Button (Primary Action) */
@@ -221,7 +236,32 @@
 
                         <div class="mb-3">
                             <label class="form-label">Course Name</label>
-                            <input list="courseList" name="course_name" class="form-control" placeholder="Select or type course name" required>
+                            <select name="course_name" class="form-select" required>
+                                <option value="" disabled selected>Select a Course</option>
+                                <%
+                                    // --- JSP/JDBC for Course List ---
+                                    Connection con_course = null;
+                                    Statement st_course = null;
+                                    ResultSet rs_course = null;
+                                    try {
+                                        Class.forName("com.mysql.cj.jdbc.Driver");
+                                        con_course = DriverManager.getConnection("jdbc:mysql://localhost:3306/project", "root", "sust53");
+                                        st_course = con_course.createStatement();
+                                        rs_course = st_course.executeQuery("SELECT course_name FROM course_data ORDER BY course_name");
+                                        while (rs_course.next()) {
+                                %>
+                                    <option value="<%= rs_course.getString("course_name") %>"><%= rs_course.getString("course_name") %></option>
+                                <%
+                                        }
+                                    } catch (Exception e) {
+                                        // e.printStackTrace(); 
+                                    } finally {
+                                        if (rs_course != null) try { rs_course.close(); } catch (SQLException ignore) {}
+                                        if (st_course != null) try { st_course.close(); } catch (SQLException ignore) {}
+                                        if (con_course != null) try { con_course.close(); } catch (SQLException ignore) {}
+                                    }
+                                %>
+                            </select>
                             <datalist id="courseList">
                                 <%
                                     // --- JSP/JDBC for Course List (Keep Original Logic) ---
@@ -250,7 +290,32 @@
 
                         <div class="mb-3">
                             <label class="form-label">Teacher Username</label>
-                            <input list="teacherList" name="teacher_name" class="form-control" placeholder="Select or type teacher username" required>
+                            <select name="teacher_name" class="form-select" required>
+                                <option value="" disabled selected>Select a Teacher</option>
+                                <%
+                                    // --- JSP/JDBC for Teacher List ---
+                                    Connection con_teacher = null;
+                                    Statement st_teacher = null;
+                                    ResultSet rs_teacher = null;
+                                    try {
+                                        Class.forName("com.mysql.cj.jdbc.Driver");
+                                        con_teacher = DriverManager.getConnection("jdbc:mysql://localhost:3306/project", "root", "sust53");
+                                        st_teacher = con_teacher.createStatement();
+                                        rs_teacher = st_teacher.executeQuery("SELECT username FROM signup_data WHERE role = 'teacher' ORDER BY username");
+                                        while (rs_teacher.next()) {
+                                %>
+                                    <option value="<%= rs_teacher.getString("username") %>"><%= rs_teacher.getString("username") %></option>
+                                <%
+                                        }
+                                    } catch (Exception e) {
+                                        // e.printStackTrace(); 
+                                    } finally {
+                                        if (rs_teacher != null) try { rs_teacher.close(); } catch (SQLException ignore) {}
+                                        if (st_teacher != null) try { st_teacher.close(); } catch (SQLException ignore) {}
+                                        if (con_teacher != null) try { con_teacher.close(); } catch (SQLException ignore) {}
+                                    }
+                                %>
+                            </select>
                             <datalist id="teacherList">
                                 <%
                                     // --- JSP/JDBC for Teacher List (Keep Original Logic) ---
@@ -292,7 +357,37 @@
                         <input type="hidden" name="action" value="removeCourse">
                         <div class="mb-3">
                             <label class="form-label">Select Course to Remove</label>
-                            <input list="courseList" name="course_name" class="form-control" placeholder="Type course name to delete" required>
+                            
+                            <%-- *** FIX: Changed to <select> for a true, stylish dropdown *** --%>
+                            <select name="course_name" class="form-select" required>
+                                <option value="" disabled selected>Select Course to Delete</option>
+                                <%
+                                    // --- JSP/JDBC for Course List for REMOVAL ---
+                                    Connection con_remove = null;
+                                    Statement st_remove = null;
+                                    ResultSet rs_remove = null;
+                                    try {
+                                        Class.forName("com.mysql.cj.jdbc.Driver");
+                                        // Note: Using a fresh connection object to avoid resource collision
+                                        con_remove = DriverManager.getConnection("jdbc:mysql://localhost:3306/project", "root", "sust53"); 
+                                        st_remove = con_remove.createStatement();
+                                        rs_remove = st_remove.executeQuery("SELECT course_name FROM course_data ORDER BY course_name");
+                                        while (rs_remove.next()) {
+                                %>
+                                    <option value="<%= rs_remove.getString("course_name") %>"><%= rs_remove.getString("course_name") %></option>
+                                <%
+                                        }
+                                    } catch (Exception e) {
+                                        // e.printStackTrace(); 
+                                    } finally {
+                                        if (rs_remove != null) try { rs_remove.close(); } catch (SQLException ignore) {}
+                                        if (st_remove != null) try { st_remove.close(); } catch (SQLException ignore) {}
+                                        if (con_remove != null) try { con_remove.close(); } catch (SQLException ignore) {}
+                                    }
+                                %>
+                            </select>
+                            <%-- *** END FIX *** --%>
+
                         </div>
                         <button type="submit" class="btn btn-danger w-100 fw-bold">
                             <i class="fas fa-minus-circle me-1"></i> Remove Course Permanently
