@@ -23,7 +23,6 @@ A comprehensive web-based Course Management System built using **Java Servlets**
 - [Usage](#usage)
 - [User Roles](#user-roles)
 - [Contributors](#contributors)
-- [License](#license)
 
 ---
 
@@ -70,8 +69,6 @@ The application features a modern, responsive UI with glassmorphism design and a
 ### Additional Features
 
 - **Modern UI/UX Design**
-  - Glassmorphism design with backdrop blur effects
-  - Animated gradient backgrounds
   - Responsive layout using Bootstrap 5.3
   - Font Awesome icons for enhanced visual appeal
   - Smooth animations using Animate.css
