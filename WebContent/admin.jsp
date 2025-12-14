@@ -11,6 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         body {
@@ -18,9 +19,7 @@
             min-height: 100vh;
             padding: 30px;
             color: #fff;
-            /* Animated Gradient Background */
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
+            background: #0A3D62;
             animation: gradientBG 15s ease infinite;
         }
 
@@ -32,7 +31,7 @@
 
         /* Glass-Effect Dashboard Cards */
         .dashboard-card {
-            background: rgba(255, 255, 255, 0.15); /* Light translucent white */
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 15px;
@@ -49,7 +48,7 @@
 
         h2, h3 {
             font-weight: 700;
-            color: white; /* Title is white against gradient */
+            color: white; 
             text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             margin-bottom: 20px;
         }
@@ -59,14 +58,13 @@
             color: #ffcc00; /* Use a highlight color for section titles */
         }
 
-        /* Form Labels */
+        /* Form Labels & Controls */
         .form-label {
             font-weight: 600;
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Input Fields */
         .form-control {
             background: rgba(255, 255, 255, 0.2);
             border: none;
@@ -98,15 +96,15 @@
             background-color: #e6b800;
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            color: #333; /* Ensure color stays dark on hover */
+            color: #333; 
         }
 
-        /* Logout Button (Danger/Secondary Action) */
+        /* Logout Button */
         .logout-btn {
             position: absolute;
             top: 25px;
             right: 35px;
-            background: rgba(255, 77, 77, 0.8); /* Translucent Red */
+            background: rgba(255, 77, 77, 0.8);
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
@@ -120,6 +118,30 @@
             background: #cc0000;
             transform: scale(1.05);
             box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        /* --- NEW: Colorful Glass Alerts --- */
+        .alert-glass {
+            font-weight: 600;
+            border-radius: 12px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Success Alert (Teal/Blue) */
+        .alert-success-glass {
+            background-color: rgba(35, 213, 171, 0.7); 
+            color: #0d3b23; /* Dark green for contrast */
+        }
+
+        /* Error Alert (Pink/Red) */
+        .alert-danger-glass {
+            background-color: rgba(231, 60, 126, 0.7); 
+            color: #5c182a; /* Dark pink/red for contrast */
         }
     </style>
 </head>
@@ -149,6 +171,26 @@
             <i class="fas fa-tools me-2"></i> Administrator Control Panel
         </h2>
 
+        <%
+            // --- ALERT RENDERING LOGIC ---
+            // Checks for URL parameters: ?status=success&message=...
+            String status = request.getParameter("status");
+            String message = request.getParameter("message");
+            
+            if ("success".equals(status) && message != null) {
+        %>
+            <div class="alert-glass alert-success-glass animate__animated animate__fadeInDown">
+                <i class="fas fa-check-circle me-2"></i> 
+                Success! <%= message.trim() %>
+            </div>
+        <%
+            } else if ("error".equals(status) && message != null) {
+        %>
+            <div class="alert-glass alert-danger-glass animate__animated animate__shakeX">
+                <i class="fas fa-exclamation-triangle me-2"></i> 
+                Error: <%= message.trim() %>
+            </div>
+        <% } %>
         <div class="row justify-content-center">
             
             <div class="col-lg-6 col-md-10">
