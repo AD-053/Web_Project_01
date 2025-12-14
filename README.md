@@ -379,25 +379,8 @@ This project fully satisfies all requirements specified in the Web Technology la
 
 ---
 
-## 📄 License
-
-This project is developed for educational purposes as part of the Web Technology course curriculum.
-
----
-
-## 🙏 Acknowledgments
-
-- Course instructors for project guidelines
-- Bootstrap team for the excellent UI framework
-- Apache Tomcat community for the servlet container
-- MySQL for the robust database system
-
----
-
 <div align="center">
 
-**⭐ If you found this project helpful, please consider giving it a star! ⭐**
-
-Made with ❤️ using Java Servlets, JSP, and MySQL
+Made with using Java Servlets, JSP, and MySQL
 
 </div>
