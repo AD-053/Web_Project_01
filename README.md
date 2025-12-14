@@ -367,10 +367,12 @@ This project fully satisfies all requirements specified in the Web Technology la
 ## 👨‍💻 Contributors
 
 - **Developer**: Md Rahad Islam
+- **Registration Number**: 2022331097
 - **Course**: Web Technology (2nd Year, 2nd Semester)
 - **Institution**: [SUST]
 
 - **Developer**: Autanu Datta
+- **Registration Number**: 2022331053
 - **Course**: Web Technology (2nd Year, 2nd Semester)
 - **Institution**: [SUST]
 
