@@ -23,6 +23,30 @@ public class admin extends HttpServlet {
         
         Connection con = null;
 
+        // --- FIX: Check if action is null or empty. If so, redirect back to admin.jsp immediately. ---
+        if (action == null || action.trim().isEmpty()) {
+            // This is likely a direct access or redirect after login where no specific action is needed.
+            // Check for status/message in the request attributes first (if this were POST), 
+            // but for GET, just redirecting to the view page is enough.
+            
+            // If there are existing status/message parameters (e.g., from a previous servlet redirect), 
+            // we should preserve them and let admin.jsp handle the alert.
+            status = request.getParameter("status");
+            message = request.getParameter("message");
+            
+            if (status != null) {
+                // If a status/message exists, use them for redirection
+                String encodedMessage = URLEncoder.encode(message, "UTF-8");
+                response.sendRedirect("admin.jsp?status=" + status + "&message=" + encodedMessage);
+            } else {
+                // If no action or alert message, just show the page clean.
+                response.sendRedirect("admin.jsp");
+            }
+            return; // Stop execution of the rest of the doGet method
+        }
+        // --- END FIX ---
+
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
@@ -57,44 +81,45 @@ public class admin extends HttpServlet {
                 String teacherUsername = request.getParameter("teacher_name");
                 String courseCode = null;
                 boolean teacherAssigned = false;
-
-                // Step 1: Get Course Code
-                String getCodeQuery = "SELECT course_code, JSON_CONTAINS(teacher_list, '\"" + teacherUsername + "\"') AS assigned FROM course_data WHERE course_name = ?";
-                PreparedStatement getCodeStmt = con.prepareStatement(getCodeQuery);
-                getCodeStmt.setString(1, courseName);
-                ResultSet rs = getCodeStmt.executeQuery();
-
-                if (rs.next()) {
-                    courseCode = rs.getString("course_code");
-                    int alreadyAssigned = rs.getInt("assigned");
-
-                    if (alreadyAssigned == 1) {
-                        // Teacher is already assigned
-                        message = "Teacher '" + teacherUsername + "' is already assigned to course '" + courseName + "'.";
-                    } else {
-                        // Step 2: Assign Teacher (Append to JSON array)
-                        String updateQuery = "UPDATE course_data SET teacher_list = JSON_ARRAY_APPEND(teacher_list, '$', ?) WHERE course_code = ?";
-                        PreparedStatement updateStmt = con.prepareStatement(updateQuery);
-                        updateStmt.setString(1, teacherUsername);
-                        updateStmt.setString(2, courseCode);
-                        
-                        int rowsAffected = updateStmt.executeUpdate();
-
-                        if (rowsAffected > 0) {
-                            status = "success";
-                            message = "Teacher '" + teacherUsername + "' successfully assigned to course '" + courseName + "'.";
-                            teacherAssigned = true;
-                        } else {
-                            message = "Failed to update course data for teacher assignment.";
-                        }
-                    }
-                } else {
-                    message = "Error: Course '" + courseName + "' not found.";
-                }
                 
-                // Check if the teacher exists (Optional but highly recommended)
-                if (!teacherAssigned && !isUserExists(con, teacherUsername, "teacher")) {
+                // Check if the teacher exists first (Highly recommended)
+                if (!isUserExists(con, teacherUsername, "teacher")) {
                     message = "Error: Teacher username '" + teacherUsername + "' not found in signup data.";
+                } else {
+
+                    // Step 1: Get Course Code and Check Assignment Status
+                    String getCodeQuery = "SELECT course_code, JSON_CONTAINS(teacher_list, '\"" + teacherUsername + "\"') AS assigned FROM course_data WHERE course_name = ?";
+                    PreparedStatement getCodeStmt = con.prepareStatement(getCodeQuery);
+                    getCodeStmt.setString(1, courseName);
+                    ResultSet rs = getCodeStmt.executeQuery();
+
+                    if (rs.next()) {
+                        courseCode = rs.getString("course_code");
+                        int alreadyAssigned = rs.getInt("assigned");
+
+                        if (alreadyAssigned == 1) {
+                            // Teacher is already assigned
+                            message = "Teacher '" + teacherUsername + "' is already assigned to course '" + courseName + "'.";
+                        } else {
+                            // Step 2: Assign Teacher (Append to JSON array)
+                            String updateQuery = "UPDATE course_data SET teacher_list = JSON_ARRAY_APPEND(teacher_list, '$', ?) WHERE course_code = ?";
+                            PreparedStatement updateStmt = con.prepareStatement(updateQuery);
+                            updateStmt.setString(1, teacherUsername);
+                            updateStmt.setString(2, courseCode);
+                            
+                            int rowsAffected = updateStmt.executeUpdate();
+
+                            if (rowsAffected > 0) {
+                                status = "success";
+                                message = "Teacher '" + teacherUsername + "' successfully assigned to course '" + courseName + "'.";
+                                teacherAssigned = true;
+                            } else {
+                                message = "Failed to update course data for teacher assignment.";
+                            }
+                        }
+                    } else {
+                        message = "Error: Course '" + courseName + "' not found.";
+                    }
                 }
 
             } else if ("removeCourse".equals(action)) {
@@ -113,6 +138,7 @@ public class admin extends HttpServlet {
                     message = "Course '" + courseName + "' not found or could not be removed.";
                 }
             } else {
+                 // This block should theoretically not be reached now, but is a good catch-all
                  status = "error";
                  message = "Invalid action specified.";
             }
@@ -123,7 +149,12 @@ public class admin extends HttpServlet {
             e.printStackTrace();
         } catch (SQLException e) {
             status = "error";
-            message = "Database Error: " + e.getMessage();
+            // Catching potential SQL duplicate key error 1062
+             if (e.getErrorCode() == 1062) { 
+                message = "Database Error: Duplicate entry detected. Course Code or Name may already exist.";
+            } else {
+                message = "Database Error: " + e.getMessage();
+            }
             e.printStackTrace();
         } catch (Exception e) {
             status = "error";
@@ -137,8 +168,7 @@ public class admin extends HttpServlet {
             }
         }
         
-        // --- Redirection to trigger alert on admin.jsp ---
-        // URL-encode the message to safely pass it via the URL
+        // --- Final Redirection to trigger alert on admin.jsp ---
         String encodedMessage = URLEncoder.encode(message, "UTF-8");
         response.sendRedirect("admin.jsp?status=" + status + "&message=" + encodedMessage);
     }
